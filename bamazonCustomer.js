@@ -39,7 +39,7 @@ var customOrder = function () {
     {
         name: 'id',
         type: 'input',
-        message: 'Enter an item id to make purchase!',
+        message: 'Provide an item id to start your purchase!',
 
     }, {
         name: 'quantity',
@@ -64,11 +64,6 @@ var customOrder = function () {
 
 			// generate bill of sale & update DB inventory
             if (result[0].stock_quantity >= answer.quantity) {
-				var cost = result[0].price * answer.quantity
-                console.log('Thank you for choosing Bamazon!\n ******* Your Order *********\n' + 
-                	'Product: ' + result[0].product_name + '\nQuantity: ' answer.quantity + 
-                	'\nYour total is: $' + cost
-                );
                 var stockDecrement = result[0].stock_quantity - answer.quantity;
                 connection.query('UPDATE products SET ? WHERE ?', [{
                     stock_quantity: stockDecrement
@@ -76,11 +71,15 @@ var customOrder = function () {
                 {
                 	item_id: answer.id
                 }], 
-                function(err, result){}
+                function(err, result){
+                	var cost = result[0].price * answer.quantity
+	                console.log('Thank you for choosing Bamazon!\n' + 'You ordered: ' + (answer.quantity) + 'of' + (result[0].product_name));
+	                console.log('Your total is: $' + cost);
+                }
                 ) //close update stock query
             } else {
                 //insufficient stock alert
-                console.log('We cannot fill your order at this time. Please consult our current inventory to complete your order.');
+                console.log('We are unable to fill your order at this time. Please consult our current inventory to complete your order.');
                 customOrder();
             }
         }) //close connection.query
