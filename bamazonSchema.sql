@@ -6,7 +6,7 @@ USE bamazon_db;
 
 CREATE TABLE products (
   -- unique id for each product --
-  tem_id INTEGER(11) AUTO_INCREMENT NOT NULL,
+  item_id INTEGER(11) AUTO_INCREMENT NOT NULL,
   -- nName of product --
   product_name VARCHAR(30) NOT NULL,
   -- department name --  
