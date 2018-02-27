@@ -1,21 +1,21 @@
 // require packages
-var inquirer = require ("inquirer");
-var mysql = require ("mysql");
+var inquirer = require ('inquirer');
+var mysql = require ('mysql');
 
 
 // local host, no password
 var connection = mysql.createConnection({
   host: 'localhost',
-  user: "root",
+  user: 'root',
   port: 3306,
-  password : "",
-  database : "bamazon_db"
+  password : '',
+  database : 'bamazon_db'
 });
 
 // connect to server & db
 connection.connect(function (err) {
     if (err) throw err;
-    console.log("connected as id " + connection.threadId);
+    console.log('connected as id ' + connection.threadId);
 });
 
 // display items for sale (id, name, & price)
@@ -37,14 +37,14 @@ var customOrder = function () {
     console.log('\n  ');
     inquirer.prompt([
     {
-        name: "id",
-        type: "input",
-        message: "Enter an item id to make purchase!",
+        name: 'id',
+        type: 'input',
+        message: 'Enter an item id to make purchase!',
 
     }, {
-        name: "quantity",
-        type: "input",
-        message: "How many units would you like to buy?",
+        name: 'quantity',
+        type: 'input',
+        message: 'How many units would you like to buy?',
 
     }
     // query DB to confirm quantity for order
@@ -58,26 +58,26 @@ var customOrder = function () {
 			
 			// missing query parameter
             if (result.length === 0) {
-                console.log("Unable to process order without quantity.");
+                console.log('Unable to process order without quantity.');
                 customOrder();
             }
 
 			// generate bill of sale & update DB inventory
             if (result[0].stock_quantity >= answer.quantity) {
 				var cost = result[0].price * answer.quantity
-                    console.log(
-                    	'Thank you for choosing Bamazon!\n ******* Your Order *********\n' + 
-                    	'Product: ' + result[0].product_name + 'Quantity: ' answer.quantity + 
-                    	'\nYour total is: $" + cost'
-                    );
+                console.log('Thank you for choosing Bamazon!\n ******* Your Order *********\n' + 
+                	'Product: ' + result[0].product_name + '\nQuantity: ' answer.quantity + 
+                	'\nYour total is: $' + cost
+                );
                 var stockDecrement = result[0].stock_quantity - answer.quantity;
-                connection.query("UPDATE products SET ? WHERE ?", [{
+                connection.query('UPDATE products SET ? WHERE ?', [{
                     stock_quantity: stockDecrement
                 },
                 {
                 	item_id: answer.id
                 }], 
-                function(err, result){})
+                function(err, result){}
+                ) //close update stock query
             } else {
                 //insufficient stock alert
                 console.log('We cannot fill your order at this time. Please consult our current inventory to complete your order.');
