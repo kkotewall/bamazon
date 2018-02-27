@@ -21,12 +21,14 @@ connection.connect(function (err) {
 // display items for sale (id, name, & price)
 var merchInventory = function() {
 	connection.query('SELECT * FROM Products', 
-		function (err, result) {
+		function (err, res) {
         if (err) throw err;
         console.log('Bamazon Items for Sale:')
 		// product display loop
-        for (var i = 0; i < result.length; i++) {
-            console.log(result[i].item_id, result[i].product_name, result[i].price);
+        for (var i = 0; i < res.length; i++) {
+        	var productDisplay =
+        	'Item Id: ' + (res[i].item_id) + '\r\n' + 'Product: ' + (res[i].product_name) + '\r\n' + 'Price: $' (res[i].price) + '\r\n' + 'No. Available: ' + (res[i].stock_quantity)
+            console.log(productDisplay);
         }
     })
 };
@@ -53,27 +55,27 @@ var customOrder = function () {
         	{
         		item_id: answer.id 
         	},
-        	function (err, result) {
+        	function (err, res) {
             if (err) throw err;
 			
 			// missing query parameter
-            if (result.length === 0) {
+            if (res.length === 0) {
                 console.log('Unable to process order without quantity.');
                 customOrder();
             }
 
 			// generate bill of sale & update DB inventory
-            if (result[0].stock_quantity >= answer.quantity) {
-                var stockDecrement = result[0].stock_quantity - answer.quantity;
+            if (res[0].stock_quantity >= answer.quantity) {
+                var stockDecrement = res[0].stock_quantity - answer.quantity;
                 connection.query('UPDATE products SET ? WHERE ?', [{
                     stock_quantity: stockDecrement
                 },
                 {
                 	item_id: answer.id
                 }], 
-                function(err, result){
-                	var cost = result[0].price * answer.quantity
-	                console.log('Thank you for choosing Bamazon!\n' + 'You ordered: ' + (answer.quantity) + 'of' + (result[0].product_name));
+                function(err, res){
+                	var cost = res[0].price * answer.quantity
+	                console.log('Thank you for choosing Bamazon!\n' + 'You ordered: ' + (answer.quantity) + 'of' + (res[0].product_name));
 	                console.log('Your total is: $' + cost);
                 }
                 ) //close update stock query
