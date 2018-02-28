@@ -15,7 +15,7 @@ CREATE TABLE products (
   price INTEGER(10),
   -- how much of the product is available in stores --
   stock_quantity INTEGER(10),
-  PRIMARY KEY (id)
+  PRIMARY KEY (item_id)
 );
 
 -- Creates new rows containing data in all named columns --
