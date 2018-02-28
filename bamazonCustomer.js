@@ -16,20 +16,15 @@ var connection = mysql.createConnection({
 // connect to server & db
 connection.connect(function (err) {
     if (err) throw err;
-    console.log('connected as id ' + connection.threadId);
+    //console.log('connected as id ' + connection.threadId);
 });
 
 // display items for sale (id, name, & price)
 function merchInventory() {
-    connection.query("SELECT * FROM auctions", function(err, results) {
+    console.log('Bamazon Items for Sale:')
+    connection.query("SELECT * FROM products", function(err, res) {
         if (err) throw err;
-        console.log('Bamazon Items for Sale:')
-        // product display loop
-        var productDisplay = [];
-        for (var i = 0; i < results.length; i++) {
-            productDisplay.push((res[i].item_id) + '\r\n' + 'Product: ' + (res[i].product_name) + '\r\n' + 'Price: $' (res[i].price) + '\r\n' + 'No. Available: ' + (res[i].stock_quantity));
-        }
-        return productDisplay;
+        console.log(res);
     })
 };
 
