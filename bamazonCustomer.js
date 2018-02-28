@@ -9,7 +9,7 @@ var connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   port: 3306,
-  password: process.env.MYSQL_PASSWORD
+  password: process.env.MYSQL_PASSWORD,
   database : 'bamazon_db'
 });
 
@@ -20,23 +20,22 @@ connection.connect(function (err) {
 });
 
 // display items for sale (id, name, & price)
-var merchInventory = function() {
-	connection.query('SELECT * FROM Products', 
-		function (err, res) {
+function merchInventory() {
+    connection.query("SELECT * FROM auctions", function(err, results) {
         if (err) throw err;
         console.log('Bamazon Items for Sale:')
-		// product display loop
-        for (var i = 0; i < res.length; i++) {
-        	var productDisplay =
-        	'Item Id: ' + (res[i].item_id) + '\r\n' + 'Product: ' + (res[i].product_name) + '\r\n' + 'Price: $' (res[i].price) + '\r\n' + 'No. Available: ' + (res[i].stock_quantity)
-            console.log(productDisplay);
+        // product display loop
+        var productDisplay = [];
+        for (var i = 0; i < results.length; i++) {
+            productDisplay.push((res[i].item_id) + '\r\n' + 'Product: ' + (res[i].product_name) + '\r\n' + 'Price: $' (res[i].price) + '\r\n' + 'No. Available: ' + (res[i].stock_quantity));
         }
+        return productDisplay;
     })
 };
 
 
 // prompt: item_id and quantity
-var customOrder = function () {
+function customOrder() {
     console.log('\n  ');
     inquirer.prompt([
     {
