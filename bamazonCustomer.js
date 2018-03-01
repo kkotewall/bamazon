@@ -2,6 +2,7 @@
 var inquirer = require ('inquirer');
 var mysql = require ('mysql');
 require("dotenv").config();
+var Table = require('cli-table');
 
 
 // local host, no password
@@ -24,7 +25,20 @@ function merchInventory() {
     console.log('Bamazon Items for Sale:')
     connection.query("SELECT * FROM products", function(err, res) {
         if (err) throw err;
-        console.log(res);
+        //console.log(res);
+        var table = new Table({ 
+            head: ["Item ID", "Product", "Price"],
+            colWidths: [10, 30, 10]
+        });
+
+        for (var i = 0; i < res.length; i++)    {
+            table.push(
+                [res[i].item_id, res[i].product_name, res[i].price]  
+            );
+        }
+        console.log(table.toString());
+        customOrder();
+
     })
 };
 
@@ -52,12 +66,7 @@ function customOrder() {
         	},
         	function (err, res) {
             if (err) throw err;
-			
-			// missing query parameter
-            if (res.length === 0) {
-                console.log('Unable to process order without quantity.');
-                customOrder();
-            }
+            },
 
 			// generate bill of sale & update DB inventory
             if (res[0].stock_quantity >= answer.quantity) {
@@ -85,3 +94,4 @@ function customOrder() {
 
 merchInventory();
 customOrder();
+
