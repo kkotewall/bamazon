@@ -58,31 +58,36 @@ function customOrder() {
     }
     // query DB to confirm quantity for order
     ]).then(function(answer) {
-        if (res[0].stock_quantity >= answer.quantity) {
-            var stockUpdate = res[0].stock_quantity - answer.quantity;
-            connection.query(
-                "UPDATE products SET ? WHERE ?", 
-                [
-                    {
-                        stock_quantity: itemQuantity
-                    }, 
-                    {
-                        item_id: answer.id
-                    }
-                ], 
-                function (err, res) { 
-                    console.log(res.affectedRows + " products updated!\n");
+        connection.query("SELECT * FROM products", function(err, res) {
+                if (err) throw err;
+            //check stock
+            for (var i = 0; i < res.length; i++)    {
+                if (res[0].stock_quantity >= answer.quantity) {
+                    var stockUpdate = res[0].stock_quantity - answer.quantity;
+                    //update database
+                    connection.query(
+                        "UPDATE products SET ? WHERE ?", 
+                        [
+                            {
+                                stock_quantity: stockUpdate
+                            }, 
+                            {
+                                item_id: answer.id
+                            }
+                        ], 
+                        function (err, res) {}
+                    );
+                    //order summary
+                    console.log("You have ordered " + answer.quantity + " units of the " + res[0].product_name + ".");
+                    console.log("\nYour total is: $" + (answer.quantity * res[0].price) + "." + "\nThank you for shopping Bamazon!");
                 }
-            );
-        console.log(query.sql);
-        //console.log("You have ordered " + quantity + " units of the " + res[0].product_name + ".");
-        // console.log("\nYour total is: $" + (quantity * res[0].price) + "." + "\nThank you for shopping Bamazon!");
-        }
-
-        else if (res[0].stock_quantity - quantity < 0) {
-                    console.log("We cannot currently fill this order.");
-                    customOrder();
-                }
+                //insufficient stock
+                else if (res[0].stock_quantity - quantity < 0) {
+                            console.log("We cannot currently fill this order.");
+                            customOrder();
+                        }
+            }
+        });
     });
 }
 
