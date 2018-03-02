@@ -58,27 +58,33 @@ function customOrder() {
     }
     // query DB to confirm quantity for order
     ]).then(function(answer) {
-        connection.query('SELECT * FROM products WHERE ?', 
-        	{
-        		item_id: answer.id 
-        	},
-        	function(err, res) {
-            if (err) throw err;
+        if (res[0].stock_quantity >= answer.quantity) {
+            var stockUpdate = res[0].stock_quantity - answer.quantity;
+            connection.query(
+                "UPDATE products SET ? WHERE ?", 
+                [
+                    {
+                        stock_quantity: itemQuantity
+                    }, 
+                    {
+                        item_id: answer.id
+                    }
+                ], 
+                function (err, res) { 
+                    console.log(res.affectedRows + " products updated!\n");
+                }
+            );
+        console.log(query.sql);
+        //console.log("You have ordered " + quantity + " units of the " + res[0].product_name + ".");
+        // console.log("\nYour total is: $" + (quantity * res[0].price) + "." + "\nThank you for shopping Bamazon!");
+        }
 
-			// generate bill of sale & update DB inventory
-            if (res[0].stock_quantity - quantity >= 0)  {
-                    console.log("You have ordered " + quantity + " units of the " + res[0].product_name + ".");
-                    console.log("\nYour total is: $" + (quantity * res[0].price) + "." + "\nThank you for shopping Bamazon!");
-                    // updateInventory(newQuantity, id);
-    
-                } else if (res[0].stock_quantity - quantity <= 0) {
+        else if (res[0].stock_quantity - quantity < 0) {
                     console.log("We cannot currently fill this order.");
                     customOrder();
                 }
-            }
-        ) //close connection.query
-    }); //close answer function
-} //close customOrder
+    });
+}
 
 merchInventory();
 
