@@ -12,8 +12,7 @@ Inquirer npm package
 
 
 ## Customer View
-![Bamazon starts](./Capture1.png)
-![Bamazon stops](./Capture2.png)
+![Bamazon starts](./screenshots/bamazonSale.png)
 
 
 ### Creator
